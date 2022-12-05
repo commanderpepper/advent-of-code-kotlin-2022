@@ -34,4 +34,14 @@ fun main() {
     }
 
     println(hungriestElf)
+
+    val caloriesSorted = elfCalories.sortedDescending()
+
+    var highestThree = 0
+    for(i in 0 until 3){
+        highestThree += caloriesSorted[i]
+    }
+
+    println(caloriesSorted)
+    println(highestThree)
 }
