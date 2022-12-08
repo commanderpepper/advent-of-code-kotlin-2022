@@ -4,19 +4,13 @@ import readInput
 
 fun main (){
     val dayFourInput = readInput("day04")
-    println(dayFourInput)
     val split = dayFourInput.map {
         it.split(",")
     }
-    println(split.size)
-    println(split)
     val spaces = split.map { ranges ->
         ranges.map { range ->
             Section(range.first().digitToInt(), range.last().digitToInt())
         }
-    }
-    spaces.forEach {
-        println(it)
     }
     val encapsulates = spaces.count {
         val sectionA = it.first()
