@@ -4,21 +4,16 @@ import readInput
 
 fun main (){
     val dayFourInput = readInput("day04")
-    val split = dayFourInput.map {
-        it.split(",")
-    }
-    val spaces = split.map { ranges ->
-        ranges.map { range ->
-            Section(range.first().digitToInt(), range.last().digitToInt())
-        }
-    }
-    val encapsulates = spaces.count {
-        val sectionA = it.first()
-        val sectionB = it.last()
-        sectionA.contains(sectionB) || sectionB.contains(sectionA)
-    }
-    println(encapsulates)
+    val ranges: List<Pair<IntRange,IntRange>> = dayFourInput.map { it.asRanges() }
+    println(ranges.count { it.first fullyOverlaps it.second || it.second fullyOverlaps it.first  })
 }
+private fun String.asIntRange(): IntRange =
+    substringBefore("-").toInt() .. substringAfter("-").toInt()
+
+private fun String.asRanges(): Pair<IntRange,IntRange> =
+    substringBefore(",").asIntRange() to substringAfter(",").asIntRange()
+private infix fun IntRange.fullyOverlaps(other: IntRange): Boolean =
+    first <= other.first && last >= other.last
 
 data class Section(val start: Int, val end: Int){
     fun contains(otherSection: Section): Boolean {
