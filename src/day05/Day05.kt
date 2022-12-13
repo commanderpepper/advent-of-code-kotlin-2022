@@ -9,7 +9,7 @@ fun main(){
     val instructions: List<Instruction> = parseInstructions(input)
 
 //    println(partOne(instructions, stacks))
-//    println(partTwo(instructions, stacks))
+    println(partTwo(instructions, stacks))
 }
 
 private fun partTwo(
