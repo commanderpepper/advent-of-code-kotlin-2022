@@ -10,6 +10,7 @@ If you're stuck with Kotlin-specific questions or anything related to this templ
 - [Kotlin Slack][slack]
 - Template [issue tracker][issues]
 
+I am reading https://todd.ginsberg.com/ for solutions to days that I cannot solve.
 
 [^aoc]:
     [Advent of Code][aoc] – An annual event of Christmas-oriented programming challenges started December 2015.
