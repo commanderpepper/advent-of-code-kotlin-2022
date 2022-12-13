@@ -10,6 +10,25 @@ fun main(){
 
     println(stacks)
     println(instructions)
+
+    instructions.forEach { instruction ->
+        repeat(instruction.amount){
+            val box = stacks[instruction.source].first()
+            stacks[instruction.target].add(0, box)
+            stacks[instruction.source].removeAt(0)
+        }
+    }
+
+    println(stacks)
+    println(instructions)
+
+    println(stacks.topCrates())
+}
+
+private fun List<MutableList<Char>>.topCrates(): String {
+    return this.map {
+        it.firstOrNull() ?: ""
+    }.joinToString()
 }
 
 private fun createStacks(input: List<String>): List<MutableList<Char>> {
@@ -31,4 +50,5 @@ private fun parseInstructions(input: List<String>): List<Instruction> =
             }
         }
 
+// Subtract one from source and target to follow instructions from input
 private data class Instruction(val amount: Int, val source: Int, val target: Int)
