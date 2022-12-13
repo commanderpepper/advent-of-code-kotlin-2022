@@ -28,7 +28,7 @@ fun main(){
 private fun List<MutableList<Char>>.topCrates(): String {
     return this.map {
         it.firstOrNull() ?: ""
-    }.joinToString()
+    }.joinToString(separator = "")
 }
 
 private fun createStacks(input: List<String>): List<MutableList<Char>> {
