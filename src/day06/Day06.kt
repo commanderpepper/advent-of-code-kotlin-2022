@@ -4,24 +4,24 @@ import readInput
 
 fun main(){
     val input = readInput("day06")
-    val marker = input.first()
-    println(partOne(marker))
+    val signal = input.first()
+    println(findMarker(signal, 4))
+    println(findMarker(signal, 14))
 }
 
-private fun partOne(marker: String): Int {
+private fun findMarker(signal: String, markerSize: Int): Int {
     var i = 0
 
-    check@ while (i < marker.length - 3) {
-        val nextFourChars = marker.substring(i, i + 4)
-        println(nextFourChars)
-        if (nextFourChars.areAllUnique()) {
+    check@ while (i < signal.length - markerSize - 1) {
+        val packet = signal.substring(i, i + markerSize)
+        if (packet.areAllUnique()) {
             break@check
         } else {
             i++
         }
     }
 
-    return i + 4
+    return i + markerSize
 }
 
 fun String.areAllUnique(): Boolean {
