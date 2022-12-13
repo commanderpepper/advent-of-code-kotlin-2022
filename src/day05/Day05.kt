@@ -8,10 +8,23 @@ fun main(){
     val stacks: List<MutableList<Char>> = createStacks(input)
     val instructions: List<Instruction> = parseInstructions(input)
 
-    println(stacks)
-    println(instructions)
+//    println(partOne(instructions, stacks))
+//    println(partTwo(instructions, stacks))
+}
 
-    println(partOne(instructions, stacks))
+private fun partTwo(
+    instructions: List<Instruction>,
+    stacks: List<MutableList<Char>>
+) : String {
+    instructions.forEach { instruction ->
+        val boxesToMove = stacks[instruction.source].take(instruction.amount)
+        repeat(instruction.amount) {
+            stacks[instruction.source].removeAt(0)
+        }
+        stacks[instruction.target].addAll(0, boxesToMove)
+    }
+
+    return stacks.topCrates()
 }
 
 private fun partOne(
@@ -25,9 +38,6 @@ private fun partOne(
             stacks[instruction.source].removeAt(0)
         }
     }
-
-    println(stacks)
-    println(instructions)
 
     return stacks.topCrates()
 }
