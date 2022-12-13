@@ -11,8 +11,15 @@ fun main(){
     println(stacks)
     println(instructions)
 
+    println(partOne(instructions, stacks))
+}
+
+private fun partOne(
+    instructions: List<Instruction>,
+    stacks: List<MutableList<Char>>
+): String {
     instructions.forEach { instruction ->
-        repeat(instruction.amount){
+        repeat(instruction.amount) {
             val box = stacks[instruction.source].first()
             stacks[instruction.target].add(0, box)
             stacks[instruction.source].removeAt(0)
@@ -22,7 +29,7 @@ fun main(){
     println(stacks)
     println(instructions)
 
-    println(stacks.topCrates())
+    return stacks.topCrates()
 }
 
 private fun List<MutableList<Char>>.topCrates(): String {
