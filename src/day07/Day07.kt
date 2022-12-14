@@ -4,15 +4,37 @@ import readInput
 fun main(){
     val fileSystem = readInput("day07")
 
-    val rootDirectory = Directory(name = "root")
+    val directory = parseFileSystem(Directory(name = "root"), fileSystem)
 
-    println(partOne(fileSystem, rootDirectory))
+    println(partOne(directory))
+
+//    val totalSpace = 70000000
+//    val unusedSpaceNeeded = 30000000
+//
+//    val subs = rootDirectory.getAllDirectories()
+//
+//    val possibleDirectories = subs.filter {
+//        totalSpace - it.calculateSize() >= unusedSpaceNeeded
+//    }
+//
+//    println(possibleDirectories)
+//    println(possibleDirectories.sortedBy { it.calculateSize() })
+//    println(possibleDirectories.sortedByDescending { it.calculateSize() })
+//
+//    println()
+//    println(possibleDirectories.sortedBy { it.calculateSize() }.first().calculateSize())
+//    println(possibleDirectories.sortedByDescending { it.calculateSize() }.first().calculateSize())
+
 }
 
 private fun partOne(
-    fileSystem: List<String>,
-    rootDirectory: Directory
+    directory: Directory
 ): Int {
+    val filter = directory.getAllDirectories().filter { it.calculateSize() <= 100000 }
+    return filter.sumOf { it.calculateSize() }
+}
+
+private fun parseFileSystem(rootDirectory: Directory, fileSystem: List<String>): Directory {
     var workingDirectory = rootDirectory
 
     fileSystem.drop(1).forEach { terminalOutput ->
@@ -43,8 +65,7 @@ private fun partOne(
         }
     }
 
-    val filter = rootDirectory.getAllDirectories().filter { it.calculateSize() <= 100000 }
-    return filter.sumOf { it.calculateSize() }
+    return rootDirectory
 }
 
 data class Directory(
