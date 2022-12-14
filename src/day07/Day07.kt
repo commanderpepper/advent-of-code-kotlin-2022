@@ -8,28 +8,24 @@ fun main(){
 
     println(partOne(directory))
 
-//    val totalSpace = 70000000
-//    val unusedSpaceNeeded = 30000000
-//
-//    val subs = rootDirectory.getAllDirectories()
-//
-//    val possibleDirectories = subs.filter {
-//        totalSpace - it.calculateSize() >= unusedSpaceNeeded
-//    }
-//
-//    println(possibleDirectories)
-//    println(possibleDirectories.sortedBy { it.calculateSize() })
-//    println(possibleDirectories.sortedByDescending { it.calculateSize() })
-//
-//    println()
-//    println(possibleDirectories.sortedBy { it.calculateSize() }.first().calculateSize())
-//    println(possibleDirectories.sortedByDescending { it.calculateSize() }.first().calculateSize())
+    val totalSpace = 70000000
+    val unusedSpaceNeeded = 30000000
 
+    println(partTwo(directory, totalSpace, unusedSpaceNeeded).calculateSize())
 }
 
-private fun partOne(
-    directory: Directory
-): Int {
+private fun partTwo(directory: Directory, totalDiskSize: Int, spaceNeededSize: Int): Directory {
+    val allDirectories = directory.getAllDirectories()
+    val directorySize = directory.calculateSize()
+    val spaceAvailable = totalDiskSize - directorySize
+    val spaceToMakeUp = spaceNeededSize - spaceAvailable
+
+    val directoriesSuitableForDeletion = allDirectories.filter { it.calculateSize() >= spaceToMakeUp }
+
+    return directoriesSuitableForDeletion.minBy { it.calculateSize() }
+}
+
+private fun partOne(directory: Directory): Int {
     val filter = directory.getAllDirectories().filter { it.calculateSize() <= 100000 }
     return filter.sumOf { it.calculateSize() }
 }
@@ -80,16 +76,12 @@ data class Directory(
     fun getAllDirectories(): List<Directory>{
         val result = mutableListOf<Directory>()
         result.add(this)
-        this.subdirectories.forEach { (key, value) ->
+        this.subdirectories.forEach { (_, value) ->
             result.addAll(value.getAllDirectories())
         }
 
         return result
     }
-}
-
-fun traverseDirectory(directoryList: List<Directory>, predicate: (Directory) -> Boolean): List<Directory>{
-    return directoryList.filter(predicate)
 }
 
 data class File(val name: String, val size: Int)
