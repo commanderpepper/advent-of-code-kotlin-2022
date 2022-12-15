@@ -10,10 +10,11 @@ fun main(){
             Tree(height = height.toString().toInt(), row = rowIndex, col = colIndex)
         }
     }
+
     println("Edge trees: ${trees.countEdgeTrees()}")
     println("Inner visible: ${trees.countVisibleTrees()}")
-
     println(trees.countEdgeTrees() + trees.countVisibleTrees())
+    println("Highest scenic value is ${trees.findHighestScenicValue()}")
 }
 
 data class Tree(val height: Int, val row: Int, val col: Int)
@@ -61,6 +62,33 @@ private fun List<List<Tree>>.countVisibleTrees(): Int {
     return visibleTrees
 }
 
+private fun List<List<Tree>>.findHighestScenicValue(): Int {
+    var highestScenicValue = Int.MIN_VALUE
+
+    this.forEach { trees ->
+        trees.forEach { tree ->
+            if(tree.isOnEdge(rightEdge = trees.size - 1, bottomEdge = this.size - 1).not()) {
+                val topTrees = this.getTopTrees(tree)
+                val bottomTrees = this.getBottomTrees(tree)
+                val leftTrees = this.getLeftTrees(tree)
+                val rightTrees = this.getRightTrees(tree)
+
+                val topScenicValue = tree.countVisibleTrees(topTrees)
+                val bottomScenicValue = tree.countVisibleTrees(bottomTrees)
+                val leftScenicValue = tree.countVisibleTrees(leftTrees)
+                val rightScenicValue = tree.countVisibleTrees(rightTrees)
+
+                val treeScenicValue = topScenicValue * bottomScenicValue * leftScenicValue * rightScenicValue
+                if(treeScenicValue > highestScenicValue){
+                    highestScenicValue = treeScenicValue
+                }
+            }
+        }
+    }
+
+    return highestScenicValue
+}
+
 private fun List<List<Tree>>.getTopTrees(startingTree: Tree): List<Tree> {
     val topTrees = mutableListOf<Tree>()
 
@@ -99,6 +127,25 @@ private fun List<List<Tree>>.getRightTrees(startingTree: Tree): List<Tree> {
     }
 
     return rightTrees
+}
+
+private fun Tree.countVisibleTrees(treeLine: List<Tree>): Int {
+    var visibleTrees = 0
+    check@for(element in treeLine){
+        if(this.height > element.height){
+            visibleTrees++
+        }
+        if(this.height == element.height){
+            visibleTrees++
+            break@check
+        }
+        if(this.height < element.height){
+            visibleTrees++
+            break@check
+        }
+
+    }
+    return visibleTrees
 }
 
 private fun Tree.isVisible(treeLine: List<Tree>): Boolean {
