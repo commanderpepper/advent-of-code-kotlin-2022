@@ -5,21 +5,57 @@ import kotlin.math.abs
 
 fun main(){
     val dayNineInput = readInput("day09")
-    val tailVisitedPositions = mutableSetOf<day09.Position>()
-    var tail = Knot(day09.Position(xPosition = XPosition(0), yPosition = YPosition(2)))
-    var head = Knot(day09.Position(xPosition = XPosition(0), yPosition = YPosition(0)))
-
-    println(areKnotsNextToEachOther(head, tail))
+    val tailVisitedPositions = mutableSetOf<Position>()
+    var tail = Knot(Position(xPosition = XPosition(0), yPosition = YPosition(0)))
+    var head = Knot(Position(xPosition = XPosition(0), yPosition = YPosition(0)))
 
     tailVisitedPositions.add(tail.position)
 
     dayNineInput.forEach {
         val instruction = it.split(" ")
-        val direction = it.first()
-        val movement = it.last()
+        val direction = instruction.first()
+        val movement = instruction.last()
+
+        repeat(movement.toInt()){
+            val currentHeadPosition = head.position
+            when(direction){
+                // Going Right
+                "R" -> {
+                    head = head.copy(position = currentHeadPosition.copy(xPosition = XPosition(currentHeadPosition.xPosition.position + 1)))
+                    if(areKnotsNextToEachOther(head, tail).not()){
+                        tail = tail.copy(position = currentHeadPosition)
+                    }
+                }
+                // Going Left
+                "L" -> {
+                    head = head.copy(position = currentHeadPosition.copy(xPosition = XPosition(currentHeadPosition.xPosition.position - 1)))
+                    if(areKnotsNextToEachOther(head, tail).not()){
+                        tail = tail.copy(position = currentHeadPosition)
+                    }
+                }
+                // Going Up
+                "U" -> {
+                    head = head.copy(position = currentHeadPosition.copy(yPosition = YPosition(currentHeadPosition.yPosition.position + 1)))
+                    if(areKnotsNextToEachOther(head, tail).not()){
+                        tail = tail.copy(position = currentHeadPosition)
+                    }
+                }
+                // Going Down
+                else -> {
+                    head = head.copy(position = currentHeadPosition.copy(yPosition = YPosition(currentHeadPosition.yPosition.position - 1)))
+                    if(areKnotsNextToEachOther(head, tail).not()){
+                        tail = tail.copy(position = currentHeadPosition)
+                    }
+                }
+            }
+            tailVisitedPositions.add(tail.position)
+        }
+
     }
 
-    println(tailVisitedPositions.size)
+    println("Head final position $head")
+    println("Tail final position $tail")
+    println("Tail visited: ${tailVisitedPositions.size} positions")
 }
 
 fun areKnotsNextToEachOther(head: Knot, tail: Knot): Boolean {
