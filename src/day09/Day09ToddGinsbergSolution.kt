@@ -10,6 +10,7 @@ import kotlin.math.sign
 fun main(){
     val input = readInput("day09")
     val headPath: String = parseInput(input)
+    println(headPath)
     fun solvePart1(): Int = followPath(headPath, 2)
     fun solvePart2(): Int = followPath(headPath, 10)
     println(solvePart1())
@@ -41,7 +42,7 @@ fun followPathToBeRefactored(headPath: String): Int {
 
     headPath.forEach { direction ->
         head = head.move(direction)
-        if (!head.touches(tail)) {
+        if (head.touches(tail).not()) {
             tail = tail.moveTowards(head)
         }
         tailVisits += tail
@@ -65,7 +66,7 @@ private fun followPath(headPath: String, knots: Int): Int {
     headPath.forEach { direction ->
         rope[0] = rope[0].move(direction)
         rope.indices.windowed(2, 1) { (head, tail) ->
-            if (!rope[head].touches(rope[tail])) {
+            if (rope[head].touches(rope[tail]).not()) {
                 rope[tail] = rope[tail].moveTowards(rope[head])
             }
         }
