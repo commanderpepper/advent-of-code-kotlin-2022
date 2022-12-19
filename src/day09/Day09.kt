@@ -5,7 +5,128 @@ import kotlin.math.abs
 
 fun main(){
     val dayNineInput = readInput("day09")
-    println("Tail visited ${partOne(dayNineInput)}")
+//    println("Tail visited ${partOne(dayNineInput)}")
+    println("Tail visited ${partTwo(dayNineInput)}")
+}
+
+// Failed part two solution
+private fun partTwo(dayNineInput: List<String>): Int {
+    val tailVisitedPositions = mutableSetOf<Position>()
+    // The head knot is represented by the first item, the tail know is represented by the last item
+    // Int represents the index of the knot in the original list
+    val rope = MutableList<Pair<Int, Knot>>(10){it to Knot(Position(xPosition = XPosition(0), yPosition = YPosition(0)))}
+//    println(rope)
+//    val ropePairs = rope.windowed(2)
+//    ropePairs.forEach {
+//        println(it)
+//    }
+
+    rope.forEach {
+        println(it.second)
+    }
+    println()
+
+    tailVisitedPositions.add(rope.last().second.position)
+
+    dayNineInput.forEach {
+        val instruction = it.split(" ")
+        val direction = instruction.first()
+        val movement = instruction.last()
+
+        repeat(movement.toInt()) {
+            rope.forEach {
+                println(it.second)
+            }
+            println()
+            val ropePairs = rope.windowed(2)
+            when (direction) {
+                "R" -> {
+                    ropePairs.forEach { pairOfKnots ->
+                        val firstKnowIndex = pairOfKnots.first().first
+                        var firstKnot = pairOfKnots.first().second
+                        val secondKnotIndex = pairOfKnots.last().first
+                        var secondKnot = pairOfKnots.last().second
+
+                        rope[firstKnowIndex] = firstKnowIndex to firstKnot.copy(
+                            position = firstKnot.position.copy(
+                                xPosition = XPosition(firstKnot.position.xPosition.position + 1)
+                            )
+                        )
+                        if (areKnotsNextToEachOther(rope[firstKnowIndex].second, secondKnot).not()) {
+                            rope[secondKnotIndex] = secondKnotIndex to secondKnot.copy(
+                                position = secondKnot.position.copy(
+                                    xPosition = XPosition(secondKnot.position.xPosition.position + 1)
+                                )
+                            )
+                        }
+                    }
+                    tailVisitedPositions.add(rope.last().second.position)
+                }
+                "L" -> {
+                    ropePairs.forEach { pairOfKnots ->
+                        val (firstKnowIndex, firstKnot) = pairOfKnots.first()
+                        val (secondKnotIndex, secondKnot) = pairOfKnots.last()
+
+                        rope[firstKnowIndex] = firstKnowIndex to firstKnot.copy(
+                            position = firstKnot.position.copy(
+                                xPosition = XPosition(firstKnot.position.xPosition.position - 1)
+                            )
+                        )
+                        if (areKnotsNextToEachOther(rope[firstKnowIndex].second, secondKnot).not()) {
+                            rope[secondKnotIndex] = secondKnotIndex to secondKnot.copy(
+                                position = secondKnot.position.copy(
+                                    xPosition = XPosition(secondKnot.position.xPosition.position - 1)
+                                )
+                            )
+                        }
+                    }
+                    tailVisitedPositions.add(rope.last().second.position)
+                }
+                "U" -> {
+                    ropePairs.forEach { pairOfKnots ->
+                        val (firstKnowIndex, firstKnot) = pairOfKnots.first()
+                        val (secondKnotIndex, secondKnot) = pairOfKnots.last()
+
+                        rope[firstKnowIndex] = firstKnowIndex to firstKnot.copy(
+                            position = firstKnot.position.copy(
+                                yPosition = YPosition(firstKnot.position.yPosition.position + 1)
+                            )
+                        )
+                        if (areKnotsNextToEachOther(rope[firstKnowIndex].second, secondKnot).not()) {
+                            rope[secondKnotIndex] = secondKnotIndex to secondKnot.copy(
+                                position = secondKnot.position.copy(
+                                    yPosition = YPosition(firstKnot.position.yPosition.position + 1)
+                                )
+                            )
+                        }
+                    }
+                    tailVisitedPositions.add(rope.last().second.position)
+                }
+                else -> {
+                    ropePairs.forEach { pairOfKnots ->
+                        val (firstKnowIndex, firstKnot) = pairOfKnots.first()
+                        val (secondKnotIndex, secondKnot) = pairOfKnots.last()
+
+                        rope[firstKnowIndex] = firstKnowIndex to firstKnot.copy(
+                            position = firstKnot.position.copy(
+                                yPosition = YPosition(firstKnot.position.yPosition.position - 1)
+                            )
+                        )
+                        if (areKnotsNextToEachOther(rope[firstKnowIndex].second, secondKnot).not()) {
+                            rope[secondKnotIndex] = secondKnotIndex to secondKnot.copy(
+                                position = secondKnot.position.copy(
+                                    yPosition = YPosition(firstKnot.position.yPosition.position - 1)
+                                )
+                            )
+                        }
+                    }
+                    tailVisitedPositions.add(rope.last().second.position)
+                }
+            }
+        }
+    }
+
+    return tailVisitedPositions.size
 }
 
 private fun partOne(dayNineInput: List<String>): Int {
