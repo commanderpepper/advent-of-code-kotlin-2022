@@ -4,7 +4,7 @@ import readInput
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-// I was unable to solve part two of day nine so I am using Todd's solution to learn more about the problem
+// I was unable to solve part two of day nine, so I am using Todd's solution to learn more about the problem
 // His solution https://todd.ginsberg.com/post/advent-of-code/2022/day9/
 
 fun main(){
