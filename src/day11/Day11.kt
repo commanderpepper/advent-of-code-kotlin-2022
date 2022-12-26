@@ -3,11 +3,11 @@ package day11
 import readInput
 fun main (){
     val day11Input = readInput("day11")
-    println(partOne(parseInput(day11Input)))
+    println(monkeyBusiness(parseInput(day11Input)))
 }
 
-private fun partOne(monkeys: List<Monkey>): Int {
-    repeat(20) {
+private fun monkeyBusiness(monkeys: List<Monkey>, rounds: Int = 20, worryDivisor: Int = 3): Int {
+    repeat(rounds) {
         monkeys.forEach { monkey ->
             // Monkey to move to - index of item to move
             val itemsToMove = mutableListOf<Pair<Int, Int>>()
@@ -15,7 +15,7 @@ private fun partOne(monkeys: List<Monkey>): Int {
                 // Make the human worried
                 monkey.updateWorryLevel(index)
                 // Monkey inspects item
-                monkey.inspectItem(index)
+                monkey.inspectItem(index, worryDivisor)
                 // Monkey decided who it's going to throw to
                 if (monkey.isTheHumanWorried(index)) {
                     itemsToMove.add(monkey.trueMonkey to index)
@@ -38,8 +38,8 @@ private fun partOne(monkeys: List<Monkey>): Int {
 }
 
 data class Monkey(val items: MutableList<Int>, val operation: Operation, val testCondition: Int, val trueMonkey: Int, val falseMonkey: Int, var itemsInspected: Int = 0){
-    fun inspectItem(itemIndex: Int){
-        items[itemIndex] /= 3
+    fun inspectItem(itemIndex: Int, divisor : Int = 3){
+        items[itemIndex] = if(divisor > 0) items[itemIndex] / divisor else items[itemIndex]
         itemsInspected++
     }
 
