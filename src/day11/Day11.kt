@@ -4,13 +4,42 @@ import readInput
 fun main (){
     val day11Input = readInput("day11")
     val monkeys = parseInput(day11Input)
+
+    monkeys.forEach { monkey ->
+        // Monkey to move to - index of item to move
+        val itemsToMove = mutableListOf<Pair<Int, Int>>()
+        monkey.items.forEachIndexed { index, _ ->
+            // inspect item
+            monkey.updateWorryLevel(index)
+            monkey.inspectItem(index)
+            if(monkey.isTheHumanWorried(index)){
+                itemsToMove.add(monkey.trueMonkey to index)
+            }
+            else {
+                itemsToMove.add(monkey.falseMonkey to index)
+            }
+        }
+        itemsToMove.forEach {
+            val otherMonkey = monkeys[it.first]
+            otherMonkey.items.add(monkey.items[it.second])
+        }
+        monkey.items.clear()
+    }
+
     monkeys.forEach(::println)
 }
 
-data class Monkey(private val startingItems: List<Int>, val operation: Operation, val testCondition: Int, val trueMonkey: Int, val falseMonkey: Int){
-    private val items = mutableListOf<Int>()
-    init {
-        items.addAll(startingItems)
+data class Monkey(val items: MutableList<Int>, val operation: Operation, val testCondition: Int, val trueMonkey: Int, val falseMonkey: Int){
+    fun inspectItem(itemIndex: Int){
+        items[itemIndex] /= 3
+    }
+
+    fun updateWorryLevel(itemIndex: Int){
+        items[itemIndex] = operation.operate(items[itemIndex])
+    }
+
+    fun isTheHumanWorried(itemIndex: Int): Boolean {
+        return items[itemIndex] % testCondition == 0
     }
 }
 
@@ -58,7 +87,7 @@ fun parseInput(input: List<String>): List<Monkey> {
             val falseMonkey = input[i + 5].slice(falseStartIndex until input[i + 5].length).toInt()
 //            println(falseMonkey)
 
-            val monkey = Monkey(startingItems = startingItems, operation = operation, testCondition = testAmount, trueMonkey = trueMonkey, falseMonkey = falseMonkey)
+            val monkey = Monkey(items = startingItems.toMutableList(), operation = operation, testCondition = testAmount, trueMonkey = trueMonkey, falseMonkey = falseMonkey)
             monkeys.add(monkey)
 
             i += 5
