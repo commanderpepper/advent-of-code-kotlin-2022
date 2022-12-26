@@ -5,33 +5,38 @@ fun main (){
     val day11Input = readInput("day11")
     val monkeys = parseInput(day11Input)
 
-    monkeys.forEach { monkey ->
-        // Monkey to move to - index of item to move
-        val itemsToMove = mutableListOf<Pair<Int, Int>>()
-        monkey.items.forEachIndexed { index, _ ->
-            // inspect item
-            monkey.updateWorryLevel(index)
-            monkey.inspectItem(index)
-            if(monkey.isTheHumanWorried(index)){
-                itemsToMove.add(monkey.trueMonkey to index)
+    repeat(20){
+        monkeys.forEach { monkey ->
+            // Monkey to move to - index of item to move
+            val itemsToMove = mutableListOf<Pair<Int, Int>>()
+            monkey.items.forEachIndexed { index, _ ->
+                // inspect item
+                monkey.updateWorryLevel(index)
+                monkey.inspectItem(index)
+                if(monkey.isTheHumanWorried(index)){
+                    itemsToMove.add(monkey.trueMonkey to index)
+                }
+                else {
+                    itemsToMove.add(monkey.falseMonkey to index)
+                }
             }
-            else {
-                itemsToMove.add(monkey.falseMonkey to index)
+            itemsToMove.forEach {
+                val otherMonkey = monkeys[it.first]
+                otherMonkey.items.add(monkey.items[it.second])
             }
+            monkey.items.clear()
         }
-        itemsToMove.forEach {
-            val otherMonkey = monkeys[it.first]
-            otherMonkey.items.add(monkey.items[it.second])
-        }
-        monkey.items.clear()
     }
-
     monkeys.forEach(::println)
+
+    val deviousMonkeys = monkeys.sortedByDescending { it.itemsInspected }
+    println(deviousMonkeys[0].itemsInspected * deviousMonkeys[1].itemsInspected)
 }
 
-data class Monkey(val items: MutableList<Int>, val operation: Operation, val testCondition: Int, val trueMonkey: Int, val falseMonkey: Int){
+data class Monkey(val items: MutableList<Int>, val operation: Operation, val testCondition: Int, val trueMonkey: Int, val falseMonkey: Int, var itemsInspected: Int = 0){
     fun inspectItem(itemIndex: Int){
         items[itemIndex] /= 3
+        itemsInspected++
     }
 
     fun updateWorryLevel(itemIndex: Int){
