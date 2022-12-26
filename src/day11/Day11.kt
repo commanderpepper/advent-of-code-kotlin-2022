@@ -3,23 +3,27 @@ package day11
 import readInput
 fun main (){
     val day11Input = readInput("day11")
-    val monkeys = parseInput(day11Input)
+    println(partOne(parseInput(day11Input)))
+}
 
-    repeat(20){
+private fun partOne(monkeys: List<Monkey>): Int {
+    repeat(20) {
         monkeys.forEach { monkey ->
             // Monkey to move to - index of item to move
             val itemsToMove = mutableListOf<Pair<Int, Int>>()
             monkey.items.forEachIndexed { index, _ ->
-                // inspect item
+                // Make the human worried
                 monkey.updateWorryLevel(index)
+                // Monkey inspects item
                 monkey.inspectItem(index)
-                if(monkey.isTheHumanWorried(index)){
+                // Monkey decided who it's going to throw to
+                if (monkey.isTheHumanWorried(index)) {
                     itemsToMove.add(monkey.trueMonkey to index)
-                }
-                else {
+                } else {
                     itemsToMove.add(monkey.falseMonkey to index)
                 }
             }
+            // Monkey throws the items
             itemsToMove.forEach {
                 val otherMonkey = monkeys[it.first]
                 otherMonkey.items.add(monkey.items[it.second])
@@ -27,10 +31,10 @@ fun main (){
             monkey.items.clear()
         }
     }
-    monkeys.forEach(::println)
+//    monkeys.forEach(::println)
 
     val deviousMonkeys = monkeys.sortedByDescending { it.itemsInspected }
-    println(deviousMonkeys[0].itemsInspected * deviousMonkeys[1].itemsInspected)
+    return deviousMonkeys[0].itemsInspected * deviousMonkeys[1].itemsInspected
 }
 
 data class Monkey(val items: MutableList<Int>, val operation: Operation, val testCondition: Int, val trueMonkey: Int, val falseMonkey: Int, var itemsInspected: Int = 0){
