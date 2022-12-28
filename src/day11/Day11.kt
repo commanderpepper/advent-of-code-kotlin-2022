@@ -6,7 +6,15 @@ fun main (){
     val day11Input = readInput("day11")
     val monkeys = parseInput(day11Input)
     println(monkeyBusiness(monkeys = monkeys, rounds = 20, worryDivisor = 3L))
-//    println(monkeyBusiness(monkeys = monkeys, rounds = 10000, worryDivisor = 0L))
+    println(monkeyBusiness(monkeys = monkeys, rounds = 10000, worryDivisor = 0L))
+}
+
+fun List<Monkey>.getTestProduct(): Long {
+    var product = 1L
+    this.forEach { monkey ->
+        product *= monkey.testCondition
+    }
+    return product
 }
 
 private fun monkeyBusiness(monkeys: List<Monkey>, rounds: Int = 20, worryDivisor: Long = 3L): Long {
@@ -16,7 +24,8 @@ private fun monkeyBusiness(monkeys: List<Monkey>, rounds: Int = 20, worryDivisor
             val itemsToMove = mutableListOf<Pair<Int, Int>>()
             monkey.items.forEachIndexed { index, _ ->
                 // Make the human worried
-                monkey.updateWorryLevel(index)
+                val product = monkeys.getTestProduct()
+                monkey.updateWorryLevel(index, product)
                 // Monkey inspects item
                 monkey.inspectItem(index, worryDivisor)
                 // Monkey decided who it's going to throw to
@@ -31,6 +40,7 @@ private fun monkeyBusiness(monkeys: List<Monkey>, rounds: Int = 20, worryDivisor
                 val otherMonkey = monkeys[it.first]
                 otherMonkey.items.add(monkey.items[it.second])
             }
+            monkey.itemsInspected += monkey.items.size
             monkey.items.clear()
         }
     }
@@ -45,12 +55,16 @@ data class Monkey(val items: MutableList<Long>, val operation: Operation, val te
         if(divisor > 0) {
             items[itemIndex] = items[itemIndex] / divisor
         }
-        itemsInspected++
     }
 
     fun updateWorryLevel(itemIndex: Int){
         val item = items[itemIndex]
         items[itemIndex] = operation.operate(item)
+    }
+
+    fun updateWorryLevel(itemIndex: Int, testProduct : Long){
+        val item = items[itemIndex]
+        items[itemIndex] = operation.operate(item) % testProduct
     }
 
     fun isTheHumanWorried(itemIndex: Int): Boolean {
