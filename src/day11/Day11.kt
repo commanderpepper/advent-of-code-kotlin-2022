@@ -4,11 +4,13 @@ import readInput
 
 fun main (){
     val day11Input = readInput("day11")
-    val monkeys = parseInput(day11Input)
-    println(monkeyBusiness(monkeys = monkeys, rounds = 20, worryDivisor = 3L))
-    println(monkeyBusiness(monkeys = monkeys, rounds = 10000, worryDivisor = 0L))
+    val monkeysListPartOne = parseInput(day11Input)
+    val monkeysListPartTwo = parseInput(day11Input)
+    println(monkeyBusiness(monkeys = monkeysListPartOne, rounds = 20, worryDivisor = 3L))
+    println(monkeyBusiness(monkeys = monkeysListPartTwo, rounds = 10000, worryDivisor = 0L))
 }
 
+// Using the solution from Todd Ginsberg solution for day 11
 fun List<Monkey>.getTestProduct(): Long {
     var product = 1L
     this.forEach { monkey ->
@@ -62,6 +64,7 @@ data class Monkey(val items: MutableList<Long>, val operation: Operation, val te
         items[itemIndex] = operation.operate(item)
     }
 
+    // Using the solution from Todd Ginsberg solution for day 11
     fun updateWorryLevel(itemIndex: Int, testProduct : Long){
         val item = items[itemIndex]
         items[itemIndex] = operation.operate(item) % testProduct
