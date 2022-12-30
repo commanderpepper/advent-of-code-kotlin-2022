@@ -15,16 +15,28 @@ fun main(){
 
     val rootPosition = PositionTree(rootPosition = startPosition!!)
 
-    generateChildren(rootPosition, elevationMap)
-    generateChildren(rootPosition.leftChild, elevationMap)
-    generateChildren(rootPosition.rightChild, elevationMap)
-    generateChildren(rootPosition.upChild, elevationMap)
-    generateChildren(rootPosition.downChild, elevationMap)
+    // Track if position tree was already checked
+    val visitedPositions = mutableSetOf<Position>()
+    val positionsToCheck = mutableListOf<PositionTree>()
+    positionsToCheck.add(rootPosition)
+
+    // While there are more positions to check, generate children
+    while(positionsToCheck.isNotEmpty()){
+        val positionTreeToGenerateFrom = positionsToCheck.removeFirst()
+        // If the next item in the list is not in the set then generate away
+        if(visitedPositions.contains(positionTreeToGenerateFrom.rootPosition).not()){
+            generateChildren(positionTreeToGenerateFrom, elevationMap)
+            visitedPositions.add(positionTreeToGenerateFrom.rootPosition)
+
+            // If a child is not null then add it to the list of positions to check against
+            positionTreeToGenerateFrom.leftChild?.let { positionsToCheck.add(it) }
+            positionTreeToGenerateFrom.rightChild?.let { positionsToCheck.add(it) }
+            positionTreeToGenerateFrom.upChild?.let { positionsToCheck.add(it) }
+            positionTreeToGenerateFrom.downChild?.let { positionsToCheck.add(it) }
+        }
+    }
 
     println(rootPosition)
-    println(rootPosition.rightChild)
-    println(rootPosition.downChild)
-
 }
 
 fun generateChildren(positionTree: PositionTree?, elevationMap: List<List<Int>>){
