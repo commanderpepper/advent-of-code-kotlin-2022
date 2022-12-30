@@ -14,27 +14,17 @@ fun main(){
     println(endPosition)
 
     val rootPosition = PositionTree(rootPosition = startPosition!!)
-//    println(rootPosition)
 
     generateChildren(rootPosition, elevationMap)
+    generateChildren(rootPosition.leftChild, elevationMap)
+    generateChildren(rootPosition.rightChild, elevationMap)
+    generateChildren(rootPosition.upChild, elevationMap)
+    generateChildren(rootPosition.downChild, elevationMap)
+
     println(rootPosition)
+    println(rootPosition.rightChild)
+    println(rootPosition.downChild)
 
-//    val visitedPosition = mutableSetOf<Position>()
-//    val positionsToCheck = mutableListOf<PositionTree>()
-//    positionsToCheck.add(rootPosition)
-//
-//    while(positionsToCheck.isNotEmpty()){
-//        val currentPosition = positionsToCheck.removeFirst()
-//        if(visitedPosition.contains(currentPosition.rootPosition).not()){
-//            visitedPosition.add(currentPosition.rootPosition!!)
-//            currentPosition.childrenPosition.forEach { positionTree ->
-//                generateChildren(positionTree = positionTree, elevationMap = elevationMap)
-//                positionsToCheck.add(positionTree)
-//            }
-//        }
-//    }
-
-//    println(rootPosition)
 }
 
 fun generateChildren(positionTree: PositionTree?, elevationMap: List<List<Int>>){
@@ -46,7 +36,7 @@ fun generateChildren(positionTree: PositionTree?, elevationMap: List<List<Int>>)
 
         val currentPositionElevationValue = elevationMap[positionTree.rootPosition.y][positionTree.rootPosition.x]
         // Left
-        addChildPosition(leftPosition, elevationMap, currentPositionElevationValue,leftPosition.x > 0){ positionToAdd ->
+        addChildPosition(leftPosition, elevationMap, currentPositionElevationValue,leftPosition.x >= 0){ positionToAdd ->
             positionTree.leftChild = PositionTree(positionToAdd)
         }
 
@@ -56,7 +46,7 @@ fun generateChildren(positionTree: PositionTree?, elevationMap: List<List<Int>>)
         }
 
         // Up
-        addChildPosition(upPosition, elevationMap, currentPositionElevationValue,upPosition.y > 0){ positionToAdd ->
+        addChildPosition(upPosition, elevationMap, currentPositionElevationValue,upPosition.y >= 0){ positionToAdd ->
             positionTree.upChild = PositionTree(positionToAdd)
         }
 
