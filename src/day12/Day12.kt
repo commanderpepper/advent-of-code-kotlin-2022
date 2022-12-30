@@ -1,6 +1,7 @@
 package day12
 
 import readInput
+import kotlin.math.abs
 
 fun main(){
     val day12Input = readInput("day12")
@@ -11,6 +12,74 @@ fun main(){
     val endPosition = day12Input.findPositionOf('E')
     println(startPosition)
     println(endPosition)
+
+    val rootPosition = PositionTree(rootPosition = startPosition!!)
+//    println(rootPosition)
+
+    generateChildren(rootPosition, elevationMap)
+    println(rootPosition)
+
+//    val visitedPosition = mutableSetOf<Position>()
+//    val positionsToCheck = mutableListOf<PositionTree>()
+//    positionsToCheck.add(rootPosition)
+//
+//    while(positionsToCheck.isNotEmpty()){
+//        val currentPosition = positionsToCheck.removeFirst()
+//        if(visitedPosition.contains(currentPosition.rootPosition).not()){
+//            visitedPosition.add(currentPosition.rootPosition!!)
+//            currentPosition.childrenPosition.forEach { positionTree ->
+//                generateChildren(positionTree = positionTree, elevationMap = elevationMap)
+//                positionsToCheck.add(positionTree)
+//            }
+//        }
+//    }
+
+//    println(rootPosition)
+}
+
+fun generateChildren(positionTree: PositionTree?, elevationMap: List<List<Int>>){
+    if(positionTree != null){
+        val leftPosition: Position = positionTree.rootPosition.copy(x = positionTree.rootPosition.x - 1 , y = positionTree.rootPosition.y )
+        val rightPosition: Position = positionTree.rootPosition.copy(x = positionTree.rootPosition.x + 1 , y = positionTree.rootPosition.y)
+        val upPosition: Position = positionTree.rootPosition.copy(x = positionTree.rootPosition.x , y = positionTree.rootPosition.y - 1)
+        val downPosition: Position = positionTree.rootPosition.copy(x = positionTree.rootPosition.x , y = positionTree.rootPosition.y + 1)
+
+        val currentPositionElevationValue = elevationMap[positionTree.rootPosition.y][positionTree.rootPosition.x]
+        // Left
+        addChildPosition(leftPosition, elevationMap, currentPositionElevationValue,leftPosition.x > 0){ positionToAdd ->
+            positionTree.leftChild = PositionTree(positionToAdd)
+        }
+
+        // Right
+        addChildPosition(rightPosition, elevationMap, currentPositionElevationValue,rightPosition.x < elevationMap.first().size){ positionToAdd ->
+            positionTree.rightChild = PositionTree(positionToAdd)
+        }
+
+        // Up
+        addChildPosition(upPosition, elevationMap, currentPositionElevationValue,upPosition.y > 0){ positionToAdd ->
+            positionTree.upChild = PositionTree(positionToAdd)
+        }
+
+        // Down
+        addChildPosition(downPosition, elevationMap, currentPositionElevationValue,downPosition.y < elevationMap.size){ positionToAdd ->
+            positionTree.downChild = PositionTree(positionToAdd)
+        }
+    }
+}
+
+private fun addChildPosition(
+    positionToInspect: Position,
+    elevationMap: List<List<Int>>,
+    currentPositionElevationValue: Int,
+    positionCheck: Boolean,
+    positionAdd: (Position) -> Unit
+) {
+    if (positionCheck) {
+        val candidateElevationValue = elevationMap[positionToInspect.y][positionToInspect.x]
+        if (candidateElevationValue == currentPositionElevationValue || abs(candidateElevationValue - currentPositionElevationValue) == 1) {
+            positionAdd(positionToInspect)
+        }
+    }
 }
 
 fun generateElevationMap(heightMap: List<String>, startChar: Char = 'S', endChar: Char = 'E'): List<List<Int>> {
@@ -52,3 +121,11 @@ fun Char.calculateElevation(): Int {
 }
 
 data class Position(val x: Int, val y: Int)
+
+data class PositionTree(
+    val rootPosition: Position,
+    var leftChild: PositionTree? = null,
+    var rightChild: PositionTree? = null,
+    var upChild: PositionTree? = null,
+    var downChild: PositionTree? = null
+)
