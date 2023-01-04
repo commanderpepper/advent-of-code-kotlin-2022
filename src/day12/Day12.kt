@@ -37,6 +37,8 @@ fun main(){
     }
 
     println(rootPosition)
+    val answer = findShortestPathTo(rootPosition, endPosition!!)
+    println(answer)
 }
 
 fun generateChildren(positionTree: PositionTree?, elevationMap: List<List<Int>>){
@@ -82,6 +84,22 @@ private fun addChildPosition(
             positionAdd(positionToInspect)
         }
     }
+}
+
+fun findShortestPathTo(root: PositionTree, targetPosition: Position, steps: Int = 0): Int {
+    if(root.rootPosition == targetPosition){
+        return steps
+    }
+
+    val leftSteps = root.leftChild?.let { findShortestPathTo(it, targetPosition, steps + 1) } ?: -1
+    val rightSteps = root.rightChild?.let { findShortestPathTo(it, targetPosition, steps + 1) } ?: -1
+    val downSteps = root.downChild?.let { findShortestPathTo(it, targetPosition, steps + 1) } ?: -1
+    val upSteps = root.upChild?.let { findShortestPathTo(it, targetPosition, steps + 1) } ?: -1
+
+    val stepLists = listOf(leftSteps, rightSteps, downSteps, upSteps)
+    val answer = stepLists.filter { it != -1 }
+
+    return if(answer.isNotEmpty()) answer.min() else -1
 }
 
 fun generateElevationMap(heightMap: List<String>, startChar: Char = 'S', endChar: Char = 'E'): List<List<Int>> {
