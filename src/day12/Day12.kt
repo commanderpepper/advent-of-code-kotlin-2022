@@ -3,6 +3,12 @@ package day12
 import readInput
 import kotlin.math.abs
 
+/**
+ * My solution was able to find the correct shortest path for the smaller puzzle input (the solution is 31).
+ * My solution fails to make a proper tree for the actual puzzle input. I believe this is caused from the way I add visited positions to the set.
+ * My hunch is that I would have to tell a Set of the point added but also the origin or direction in which a point was visited from. This way a point can be inspected from more than one direction.
+ */
+
 fun main(){
     val day12Input = readInput("day12")
     day12Input.forEach(::println)
