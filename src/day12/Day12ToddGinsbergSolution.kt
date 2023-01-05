@@ -13,6 +13,22 @@ fun main(){
         canMove = { from, to -> to - from <= 1 }
     )
     println(shortestPath)
+    val startingElevations = heightMap.findPointsFromElevation { it == 0 }
+    println(startingElevations)
+    val pathsToEnd = startingElevations.map {
+        try {
+            heightMap.shortestPath(
+                begin = it,
+                isGoal = { it == heightMap.end },
+                canMove = { from, to -> to - from <= 1 }
+            )
+        }
+        catch (e: Exception){
+            Int.MAX_VALUE
+        }
+    }
+    println(pathsToEnd)
+    println(pathsToEnd.min())
 }
 
 data class Point2D(val x: Int = 0, val y: Int = 0) {
@@ -47,6 +63,13 @@ private class HeightMap(val elevations: Map<Point2D, Int>, val start: Point2D, v
             }
         }
         throw IllegalStateException("No valid path found")
+    }
+
+    /**
+     * Quick solution I came to when I first read part two of day twelve.
+     */
+    fun findPointsFromElevation(meetsConditon: (Int) -> Boolean): List<Point2D>{
+        return elevations.filter { meetsConditon(it.value) }.keys.toList()
     }
 }
 
