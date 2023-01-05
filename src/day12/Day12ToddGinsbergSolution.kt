@@ -29,6 +29,13 @@ fun main(){
     }
     println(pathsToEnd)
     println(pathsToEnd.min())
+
+    val toddsPartTwoSolution = heightMap.shortestPath(
+        begin = heightMap.end,
+        isGoal = { heightMap.elevations[it] == 0 },
+        canMove = { from, to -> from - to <= 1 }
+    )
+    println(toddsPartTwoSolution)
 }
 
 data class Point2D(val x: Int = 0, val y: Int = 0) {
